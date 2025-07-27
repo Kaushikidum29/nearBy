@@ -130,7 +130,7 @@ class _HomeViewState extends State<HomeView> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        margin: const EdgeInsets.fromLTRB(10.0, 25.0, 10.0, 10.0),
+                        margin: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         height: 50,
                         decoration: BoxDecoration(
@@ -251,6 +251,7 @@ class _HomeViewState extends State<HomeView> {
                   child: currentPosition == null
                       ? const Text("Getting location...")
                       : ListView(
+                    padding: EdgeInsets.zero,
                     controller: scrollController,
                     children: [
                       Center(
