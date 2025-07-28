@@ -54,43 +54,8 @@ class _SearchPageState extends State<SearchPage> {
           child: Column(
             children: [
               const SizedBox(height: 10),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                padding: const EdgeInsets.only(left: 12),
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
-                  borderRadius: BorderRadius.circular(35.0),
-                  border: Border.all(color: Colors.grey.shade100),
-                ),
-                child: Row(
-                  children: [
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: const Icon(Icons.keyboard_backspace, size: 25),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: TextField(
-                        controller: _controller,
-                        focusNode: _focusNode,
-                        onSubmitted: _onSearchSubmitted,
-                        decoration: const InputDecoration(
-                          hintText: 'Search here...',
-                          border: InputBorder.none,
-                          isDense: true,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.mic, color: Colors.blue),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-              ),
+              _searchBar(),
               const SizedBox(height: 16),
-
               if (isEmpty) _recentSearches(),
 
               if (showCategory) _searchCategory(),
@@ -99,6 +64,44 @@ class _SearchPageState extends State<SearchPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _searchBar() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.only(left: 12),
+      height: 50,
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(35.0),
+        border: Border.all(color: Colors.grey.shade100),
+      ),
+      child: Row(
+        children: [
+          InkWell(
+            onTap: () => Navigator.pop(context),
+            child: const Icon(Icons.keyboard_backspace, size: 25),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: TextField(
+              controller: _controller,
+              focusNode: _focusNode,
+              onSubmitted: _onSearchSubmitted,
+              decoration: const InputDecoration(
+                hintText: 'Search here...',
+                border: InputBorder.none,
+                isDense: true,
+              ),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.mic, color: Colors.blue),
+            onPressed: () {},
+          ),
+        ],
       ),
     );
   }
