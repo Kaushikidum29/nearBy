@@ -5,21 +5,49 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AddNewPlacePage extends StatefulWidget {
-  const AddNewPlacePage({super.key});
+class  AddNewPlace extends StatefulWidget {
+  final String? initialName;
+  final String? initialDescription;
+  final LatLng? initialLocation;
+  final List<File>? initialImages;
+
+  const  AddNewPlace({
+    super.key,
+    this.initialName,
+    this.initialDescription,
+    this.initialLocation,
+    this.initialImages,
+  });
 
   @override
-  State<AddNewPlacePage> createState() => _AddNewPlacePageState();
+  State< AddNewPlace> createState() => _AddNewPlaceState();
 }
 
-class _AddNewPlacePageState extends State<AddNewPlacePage> {
+class _AddNewPlaceState extends State< AddNewPlace> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descController = TextEditingController();
+  final TextEditingController locationController = TextEditingController();
   final List<File> images = [];
   LatLng? selectedLocation;
   GoogleMapController? mapController;
-
   final _formKey = GlobalKey<FormState>();
+
+  bool useManualLocation = false; // 👈 toggle
+
+  @override
+  void initState() {
+    super.initState();
+    nameController.text = widget.initialName ?? "";
+    descController.text = widget.initialDescription ?? "";
+    selectedLocation = widget.initialLocation;
+    if (widget.initialImages != null) {
+      images.addAll(widget.initialImages!);
+    }
+    if (widget.initialLocation != null) {
+      locationController.text =
+      "${widget.initialLocation!.latitude}, ${widget.initialLocation!.longitude}";
+    }
+  }
 
   Future<void> pickImage() async {
     final ImagePicker picker = ImagePicker();
@@ -43,7 +71,7 @@ class _AddNewPlacePageState extends State<AddNewPlacePage> {
     if (_formKey.currentState?.validate() != true) return;
 
     Fluttertoast.showToast(
-      msg: "Your place has been submitted. Admin will approve it.",
+      msg: "Your  Place has been submitted. Admin will approve it.",
       toastLength: Toast.LENGTH_LONG,
       backgroundColor: Colors.black87,
       textColor: Colors.white,
@@ -57,7 +85,7 @@ class _AddNewPlacePageState extends State<AddNewPlacePage> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         title: const Text(
-          "Add New Place",
+          "Add New  Place",
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -74,7 +102,7 @@ class _AddNewPlacePageState extends State<AddNewPlacePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                "Place Name",
+                " Place Name",
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 8),
@@ -85,13 +113,13 @@ class _AddNewPlacePageState extends State<AddNewPlacePage> {
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) => value == null || value.trim().isEmpty
-                    ? 'Place name is required'
+                    ? ' Place name is required'
                     : null,
               ),
 
               const SizedBox(height: 16),
               const Text(
-                "Place Description",
+                " Place Description",
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 8),
@@ -99,7 +127,7 @@ class _AddNewPlacePageState extends State<AddNewPlacePage> {
                 controller: descController,
                 maxLines: 4,
                 decoration: const InputDecoration(
-                  hintText: 'Write about the place',
+                  hintText: 'Write about the  Place',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) => value == null || value.trim().isEmpty
@@ -109,7 +137,7 @@ class _AddNewPlacePageState extends State<AddNewPlacePage> {
 
               const SizedBox(height: 16),
               const Text(
-                "Place Images",
+                " Place Images",
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
               const SizedBox(height: 8),
@@ -118,7 +146,7 @@ class _AddNewPlacePageState extends State<AddNewPlacePage> {
                 runSpacing: 10,
                 children: [
                   ...images.map(
-                    (file) => ClipRRect(
+                        (file) => ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Image.file(
                         file,
@@ -142,56 +170,110 @@ class _AddNewPlacePageState extends State<AddNewPlacePage> {
                   ),
                 ],
               ),
-
               const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Select Location",
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: getCurrentLocation,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.cyan.shade800,
-                    ),
-                    icon: const Icon(Icons.my_location, color: Colors.white),
-                    label: const Text(
-                      "Use My Location",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
+              SwitchListTile(
+                title: const Text(
+                  "Enter location manually",
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                value: useManualLocation,
+                activeColor: Colors.cyan.shade800,
+                onChanged: (val) {
+                  setState(() => useManualLocation = val);
+                },
               ),
 
-              const SizedBox(height: 8),
-              SizedBox(
-                height: 200,
-                child: GoogleMap(
-                  initialCameraPosition: const CameraPosition(
-                    target: LatLng(20.5937, 78.9629),
-                    zoom: 4,
-                  ),
-                  onMapCreated: (controller) => mapController = controller,
-                  onTap: (pos) => setState(() => selectedLocation = pos),
-                  markers: selectedLocation == null
-                      ? {}
-                      : {
+              if (useManualLocation)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: locationController,
+                      decoration: const InputDecoration(
+                        hintText: 'e.g. New York City or 28.6139,77.2090',
+                        border: OutlineInputBorder(),
+                      ),
+                      onChanged: (value) {
+                        if (value.contains(",")) {
+                          final parts = value.split(",");
+                          if (parts.length == 2) {
+                            final lat = double.tryParse(parts[0].trim());
+                            final lng = double.tryParse(parts[1].trim());
+                            if (lat != null && lng != null) {
+                              setState(() {
+                                selectedLocation = LatLng(lat, lng);
+                              });
+                            }
+                          }
+                        }
+                      },
+                    ),
+                  ],
+                )
+              else
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Select Location on Map",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            decoration: TextDecoration.underline,
+                            color:Colors.blue,
+                          ),
+                        ),
+                        ElevatedButton.icon(
+                          onPressed: getCurrentLocation,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.cyan.shade800,
+                          ),
+                          icon: const Icon(
+                            Icons.my_location,
+                            color: Colors.white,
+                          ),
+                          label: const Text(
+                            "Use My Location",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      height: 200,
+                      child: GoogleMap(
+                        initialCameraPosition: const CameraPosition(
+                          target: LatLng(20.5937, 78.9629),
+                          zoom: 4,
+                        ),
+                        onMapCreated: (controller) =>
+                        mapController = controller,
+                        onTap: (pos) => setState(() => selectedLocation = pos),
+                        markers: selectedLocation == null
+                            ? {}
+                            : {
                           Marker(
                             markerId: const MarkerId('selected'),
                             position: selectedLocation!,
                           ),
                         },
+                      ),
+                    ),
+                  ],
                 ),
-              ),
 
               const SizedBox(height: 24),
-              Center(
+              SizedBox(
+                width: double.infinity, // Full width
+                height: 45, // Fixed height
                 child: ElevatedButton(
                   onPressed: savePlace,
                   style: ElevatedButton.styleFrom(
@@ -205,7 +287,7 @@ class _AddNewPlacePageState extends State<AddNewPlacePage> {
                     ),
                   ),
                   child: const Text(
-                    "Save Place",
+                    "Save  Place",
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

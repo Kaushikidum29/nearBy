@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:near_by/features/home/presentation/widgets/login_sheet_wrapper.dart';
 import 'package:near_by/features/search/presentation/search_page.dart';
@@ -21,8 +20,8 @@ class SearchHeader extends StatelessWidget {
 
     double headerOpacity =
         1.0 -
-            ((sheetCurrentSize - headerFadeStart) /
-                (headerFadeEnd - headerFadeStart));
+        ((sheetCurrentSize - headerFadeStart) /
+            (headerFadeEnd - headerFadeStart));
     headerOpacity = headerOpacity.clamp(0.0, 1.0);
 
     return Positioned(
@@ -38,73 +37,110 @@ class SearchHeader extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  margin: const EdgeInsets.all(10),
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(35.0),
-                    border: Border.all(color: Colors.grey.shade300),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        spreadRadius: 2,
-                        blurRadius: 6,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.location_on, color: Colors.blueGrey),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: InkWell(
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => SearchPage()),
+                Row(
+                  children: [
+                    Builder(
+                      builder: (context) => GestureDetector(
+                        onTap: () => Scaffold.of(context).openDrawer(),
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 10),
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.grey.shade300),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                spreadRadius: 2,
+                                blurRadius: 6,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
                           ),
-                          child: const TextField(
-                            enabled: false,
-                            decoration: InputDecoration(
-                              hintText: 'Search here...',
-                              border: InputBorder.none,
-                            ),
-                          ),
+                          child: const Icon(Icons.notes, color: Colors.black87),
                         ),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.mic, color: Colors.grey),
-                        onPressed: () {},
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.camera_alt, color: Colors.grey),
-                        onPressed: () {},
-                      ),
-                      InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(24),
+                    ),
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(35.0),
+                          border: Border.all(color: Colors.grey.shade300),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.2),
+                              spreadRadius: 2,
+                              blurRadius: 6,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on,
+                              color: Colors.blueGrey,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const SearchPage(),
+                                  ),
+                                ),
+                                child: const TextField(
+                                  enabled: false,
+                                  decoration: InputDecoration(
+                                    hintText: 'Search here...',
+                                    border: InputBorder.none,
+                                  ),
+                                ),
                               ),
                             ),
-                            builder: (_) => const LoginSheetWrapper(),
-                          );
-                        },
-                        child: const CircleAvatar(
-                          radius: 14,
-                          backgroundImage: NetworkImage(
-                            'https://example.com/profile.jpg',
-                          ),
+                            IconButton(
+                              icon: const Icon(Icons.mic, color: Colors.grey),
+                              onPressed: () {},
+                            ),
+                            IconButton(
+                              icon: const Icon(
+                                Icons.camera_alt,
+                                color: Colors.grey,
+                              ),
+                              onPressed: () {},
+                            ),
+                            InkWell(
+                              onTap: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(24),
+                                    ),
+                                  ),
+                                  builder: (_) => const LoginSheetWrapper(),
+                                );
+                              },
+                              child: const CircleAvatar(
+                                radius: 14,
+                                backgroundImage: NetworkImage(
+                                  'https://i.pravatar.cc/150?img=3',
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 CategoryList(items: categories),
               ],
